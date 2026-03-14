@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IterAI — The Intelligence Journey</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue: #4f6fa8;
+  --blue-light: #7a96c4;
+  --blue-dim: #2e4163;
+  --green: #2d6a4f;
+  --green-light: #52a67a;
+  --green-dim: #1a3d2d;
+  --bg: #08100c;
+  --bg2: #0d1812;
+  --surface: #111f16;
+  --border: rgba(79,111,168,0.18);
+  --border-green: rgba(45,106,79,0.25);
+  --cream: #e8e4d9;
+  --muted: #8a8880;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Syne', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--cream); font-family: var(--sans); overflow-x: hidden; }
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 1000; opacity: 0.3;
+}
+
+.logo { font-family: var(--sans); font-weight: 800; font-size: 1.35rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.logo .iter { color: var(--blue); }
+.logo .ai   { color: var(--green-light); }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.4rem 4rem;
+  background: linear-gradient(to bottom, rgba(8,16,12,0.96) 0%, transparent 100%);
+  backdrop-filter: blur(4px);
+}
+nav ul { display: flex; gap: 2.8rem; list-style: none; }
+nav ul a { color: var(--muted); text-decoration: none; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; transition: color 0.2s; }
+nav ul a:hover { color: var(--cream); }
+.nav-cta { border: 1px solid var(--blue-dim) !important; color: var(--blue-light) !important; padding: 0.5rem 1.2rem; border-radius: 2px; transition: background 0.2s !important; }
+.nav-cta:hover { background: var(--blue-dim) !important; color: var(--cream) !important; }
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+  padding: 10rem 4rem 6rem; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -20%; right: -10%; width: 700px; height: 700px;
+  background: radial-gradient(ellipse, rgba(79,111,168,0.11) 0%, transparent 65%); pointer-events: none;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: -10%; left: -5%; width: 600px; height: 600px;
+  background: radial-gradient(ellipse, rgba(45,106,79,0.09) 0%, transparent 65%); pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono); font-size: 0.72rem; font-weight: 300; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--green-light); margin-bottom: 1.8rem;
+  opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+}
+.hero-eyebrow::before { content: '// '; color: var(--blue); }
+
+.hero-headline {
+  font-family: var(--serif); font-size: clamp(3.5rem, 8vw, 7.5rem); font-weight: 300;
+  line-height: 1.05; letter-spacing: -0.01em; max-width: 900px;
+  opacity: 0; animation: fadeUp 0.9s ease 0.35s forwards;
+}
+.hero-headline em { font-style: italic; color: var(--blue-light); }
+.hero-headline .ag { color: var(--green-light); }
+
+.hero-sub {
+  margin-top: 2.5rem; max-width: 520px; font-size: 1.05rem; font-weight: 400;
+  line-height: 1.7; color: var(--muted);
+  opacity: 0; animation: fadeUp 0.9s ease 0.5s forwards;
+}
+
+.hero-actions {
+  margin-top: 3.5rem; display: flex; gap: 1.2rem; align-items: center;
+  opacity: 0; animation: fadeUp 0.9s ease 0.65s forwards;
+}
+
+.btn-primary {
+  background: var(--green); color: var(--cream); border: none; padding: 0.9rem 2.2rem;
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; text-decoration: none; cursor: pointer;
+  transition: background 0.2s, transform 0.15s; border-radius: 2px; display: inline-block;
+}
+.btn-primary:hover { background: var(--green-light); transform: translateY(-1px); }
+
+.btn-ghost {
+  color: var(--blue-light); text-decoration: none; font-size: 0.82rem; font-weight: 600;
+  letter-spacing: 0.08em; display: flex; align-items: center; gap: 0.5rem;
+  transition: gap 0.2s, color 0.2s;
+}
+.btn-ghost:hover { color: var(--cream); gap: 0.8rem; }
+.btn-ghost::after { content: '→'; }
+
+.scroll-hint {
+  position: absolute; bottom: 2.5rem; left: 4rem; display: flex; align-items: center; gap: 0.8rem;
+  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted);
+  opacity: 0; animation: fadeIn 1s ease 1.2s forwards;
+}
+.scroll-line { width: 40px; height: 1px; background: linear-gradient(to right, var(--blue-dim), var(--green-dim)); }
+
+.hero-mark {
+  position: absolute; right: 4rem; bottom: 3rem;
+  font-family: var(--sans); font-weight: 800; font-size: clamp(4rem, 12vw, 10rem);
+  letter-spacing: -0.02em; line-height: 1; opacity: 0.055; user-select: none; pointer-events: none;
+}
+.hero-mark .iter { color: var(--blue); }
+.hero-mark .ai   { color: var(--green-light); }
+
+/* TICKER */
+.ticker-wrap { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow: hidden; padding: 0.8rem 0; background: var(--bg2); }
+.ticker { display: flex; animation: ticker 30s linear infinite; width: max-content; }
+.ticker-item { display: flex; align-items: center; gap: 1rem; padding: 0 2.5rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.ticker-dot { width: 4px; height: 4px; border-radius: 50%; }
+.ticker-dot.b { background: var(--blue); }
+.ticker-dot.g { background: var(--green-light); }
+
+/* SECTIONS */
+section { padding: 7rem 4rem; position: relative; }
+
+.section-label {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+  margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem;
+}
+.section-label::after { content: ''; width: 50px; height: 1px; background: currentColor; opacity: 0.3; }
+
+/* ABOUT */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; max-width: 1200px; margin: 0 auto; }
+.about-heading { font-family: var(--serif); font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 300; line-height: 1.2; margin-bottom: 2rem; }
+.about-body { font-size: 1rem; line-height: 1.8; color: var(--muted); margin-bottom: 1.4rem; }
+.path-svg { width: 100%; aspect-ratio: 1; }
+
+/* SERVICES */
+.services-section { background: var(--bg2); }
+.services-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border); border: 1px solid var(--border);
+  max-width: 1200px; margin: 0 auto;
+}
+.service-card { background: var(--bg2); padding: 3rem 2.5rem; position: relative; overflow: hidden; transition: background 0.3s; }
+.service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right, var(--blue), var(--green)); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
+.service-card:hover { background: var(--surface); }
+.service-card:hover::before { transform: scaleX(1); }
+.service-number { font-family: var(--mono); font-size: 0.65rem; color: var(--blue); letter-spacing: 0.2em; margin-bottom: 1.5rem; }
+.service-icon { width: 40px; height: 40px; margin-bottom: 1.5rem; opacity: 0.7; }
+.service-title { font-family: var(--serif); font-size: 1.55rem; font-weight: 400; margin-bottom: 1rem; line-height: 1.2; }
+.service-desc { font-size: 0.88rem; line-height: 1.7; color: var(--muted); }
+
+/* PROCESS */
+.process-inner { max-width: 1200px; margin: 0 auto; }
+.process-steps { display: grid; grid-template-columns: repeat(4, 1fr); position: relative; margin-top: 1rem; }
+.process-steps::before { content: ''; position: absolute; top: 1.35rem; left: 12.5%; right: 12.5%; height: 1px; background: linear-gradient(to right, var(--blue-dim), var(--green-dim)); }
+.process-step { padding: 0 2rem; text-align: center; }
+.step-num { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 0.75rem; margin: 0 auto 1.5rem; position: relative; z-index: 1; }
+.step-num.b { background: var(--bg); border: 1px solid var(--blue); color: var(--blue-light); }
+.step-num.g { background: var(--bg); border: 1px solid var(--green); color: var(--green-light); }
+.step-title { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.8rem; }
+.step-desc { font-size: 0.82rem; line-height: 1.65; color: var(--muted); }
+
+/* SECTORS */
+.sectors-section { background: var(--bg2); border-top: 1px solid var(--border); }
+.sectors-inner { max-width: 1200px; margin: 0 auto; }
+.sectors-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border-green); }
+.sector-item { background: var(--bg2); padding: 2.5rem 3rem; display: flex; align-items: flex-start; gap: 2rem; transition: background 0.25s; }
+.sector-item:hover { background: var(--surface); }
+.sector-tag { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em; color: var(--green-light); background: var(--green-dim); padding: 0.3rem 0.7rem; border-radius: 2px; white-space: nowrap; margin-top: 0.15rem; }
+.sector-name { font-family: var(--serif); font-size: 1.3rem; font-weight: 400; margin-bottom: 0.5rem; }
+.sector-desc { font-size: 0.82rem; line-height: 1.6; color: var(--muted); }
+
+/* WHY */
+.why-inner { max-width: 1200px; margin: 0 auto; }
+.why-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 5rem; align-items: start; }
+.why-heading { font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 300; line-height: 1.25; margin-bottom: 2rem; }
+.why-heading span { color: var(--blue-light); font-style: italic; }
+.why-body { font-size: 0.95rem; line-height: 1.8; color: var(--muted); margin-bottom: 1.2rem; }
+.stats-col { display: flex; flex-direction: column; gap: 2.5rem; }
+.stat-item { border-left: 2px solid var(--blue-dim); padding-left: 1.5rem; }
+.stat-item:nth-child(2) { border-color: var(--green-dim); }
+.stat-value { font-family: var(--serif); font-size: 3rem; font-weight: 300; line-height: 1; margin-bottom: 0.4rem; color: var(--blue-light); }
+.stat-item:nth-child(2) .stat-value { color: var(--green-light); }
+.stat-label { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+/* CTA */
+.cta-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border-green); text-align: center; position: relative; overflow: hidden; }
+.cta-section::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 600px; height: 300px; background: radial-gradient(ellipse, rgba(79,111,168,0.08) 0%, transparent 70%); pointer-events: none; }
+.cta-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+.cta-heading { font-family: var(--serif); font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 300; line-height: 1.1; margin-bottom: 1.5rem; }
+.cta-heading em { font-style: italic; color: var(--blue-light); }
+.cta-sub { font-size: 1rem; color: var(--muted); line-height: 1.7; margin-bottom: 3rem; }
+.cta-actions { display: flex; gap: 1.5rem; justify-content: center; align-items: center; flex-wrap: wrap; }
+
+/* FOOTER */
+footer { padding: 3rem 4rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.footer-links { display: flex; gap: 2rem; list-style: none; }
+.footer-links a { color: var(--muted); text-decoration: none; font-size: 0.78rem; letter-spacing: 0.06em; transition: color 0.2s; }
+.footer-links a:hover { color: var(--cream); }
+.footer-copy { font-family: var(--mono); font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; }
+
+/* ANIMATIONS */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+@keyframes ticker   { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+@keyframes dash     { to { stroke-dashoffset: 0; } }
+@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } }
+@keyframes orbit    { from { transform: rotate(0deg) translateX(110px) rotate(0deg); } to { transform: rotate(360deg) translateX(110px) rotate(-360deg); } }
+
+.reveal { opacity:0; transform:translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.d1 { transition-delay:0.1s; } .d2 { transition-delay:0.2s; } .d3 { transition-delay:0.3s; } .d4 { transition-delay:0.4s; }
+
+@media (max-width:900px) {
+  nav { padding:1.2rem 2rem; } nav ul { display:none; }
+  .hero { padding:8rem 2rem 5rem; } section { padding:5rem 2rem; }
+  .about-grid { grid-template-columns:1fr; gap:3rem; }
+  .services-grid { grid-template-columns:1fr; }
+  .process-steps { grid-template-columns:1fr 1fr; } .process-steps::before { display:none; }
+  .sectors-grid { grid-template-columns:1fr; }
+  .why-grid { grid-template-columns:1fr; gap:3rem; }
+  footer { flex-direction:column; gap:1.5rem; text-align:center; }
+  .hero-mark { font-size:5rem; right:2rem; bottom:2rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span class="iter">iter</span><span class="ai">AI</span></div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#sectors">Sectors</a></li>
+    <li><a href="#contact" class="nav-cta">Get in touch</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-eyebrow">AI Implementation &amp; Strategy</div>
+  <h1 class="hero-headline">
+    The <em>path</em> to<br>
+    intelligent<br>
+    <span class="ag">transformation</span>
+  </h1>
+  <p class="hero-sub">
+    IterAI guides organisations through the full journey of AI adoption —
+    from R&amp;D automation to enterprise-wide intelligence, with a commitment
+    to sustainable, measurable impact.
+  </p>
+  <div class="hero-actions">
+    <a href="#contact" class="btn-primary">Start the journey</a>
+    <a href="#services" class="btn-ghost">Explore services</a>
+  </div>
+  <div class="scroll-hint">
+    <span class="scroll-line"></span>
+    <span>Scroll to explore</span>
+  </div>
+  <div class="hero-mark" aria-hidden="true"><span class="iter">iter</span><span class="ai">AI</span></div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker">
+    <div class="ticker-item"><span class="ticker-dot b"></span>R&amp;D Acceleration</div>
+    <div class="ticker-item"><span class="ticker-dot g"></span>Sustainable AI</div>
+    <div class="ticker-item"><span class="ticker-dot b"></span>Process Automation</div>
+    <div class="ticker-item"><span class="ticker-dot g"></span>Data Intelligence</div>
+    <div class="ticker-item"><span class="ticker-dot b"></span>Scientific Modelling</div>
+    <div class="ticker-item"><span class="ticker-dot g"></span>Agri-Food Technology</div>
+    <div class="ticker-item"><span class="ticker-dot b"></span>Knowledge Systems</div>
+    <div class="ticker-item"><span class="ticker-dot g"></span>Enterprise AI</div>
+    <div class="ticker-item"><span class="ticker-dot b"></span>R&amp;D Acceleration</div>
+    <div class="ticker-item"><span class="ticker-dot g"></span>Sustainable AI</div>
+    <div class="ticker-item"><span class="ticker-dot b"></span>Process Automation</div>
+    <div class="ticker-item"><span class="ticker-dot g"></span>Data Intelligence</div>
+    <div class="ticker-item"><span class="ticker-dot b"></span>Scientific Modelling</div>
+    <div class="ticker-item"><span class="ticker-dot g"></span>Agri-Food Technology</div>
+    <div class="ticker-item"><span class="ticker-dot b"></span>Knowledge Systems</div>
+    <div class="ticker-item"><span class="ticker-dot g"></span>Enterprise AI</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div>
+      <div class="section-label reveal" style="color:var(--blue-light)">01 — What we do</div>
+      <h2 class="about-heading reveal d1">
+        Intelligence is not<br>a product.<br>
+        It is a <em style="color:var(--green-light);font-family:var(--serif)">journey</em>.
+      </h2>
+      <p class="about-body reveal d2">
+        <em>Iter</em> — from Latin, a path. <strong style="color:var(--blue-light)">IterAI</strong> is built on this idea:
+        AI adoption is not a one-time deployment. It is an iterative process of
+        discovery, implementation, learning, and growth.
+      </p>
+      <p class="about-body reveal d3">
+        We work alongside organisations to embed artificial intelligence where it creates
+        real, lasting value — across research, operations, and decision-making —
+        with an emphasis on sustainability and scientific rigour.
+      </p>
+    </div>
+    <div class="reveal d2">
+      <svg class="path-svg" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M40 0L0 0 0 40" fill="none" stroke="rgba(79,111,168,0.07)" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect width="400" height="400" fill="url(#grid)" rx="4"/>
+        <path d="M60 320 C80 280,120 240,160 200 C200 160,220 130,260 100"
+              stroke="#4f6fa8" stroke-width="2" fill="none" stroke-dasharray="320" stroke-dashoffset="320"
+              style="animation:dash 2s ease 0.5s forwards"/>
+        <path d="M260 100 C300 70,330 80,345 105 C358 128,350 162,318 192 C286 222,260 245,260 305"
+              stroke="#2d6a4f" stroke-width="2" fill="none" stroke-dasharray="320" stroke-dashoffset="320"
+              style="animation:dash 2s ease 1.2s forwards"/>
+        <circle cx="60"  cy="320" r="6" fill="#4f6fa8" style="animation:pulseDot 2.5s ease-in-out 0.5s infinite"/>
+        <circle cx="160" cy="200" r="6" fill="#4f6fa8" style="animation:pulseDot 2.5s ease-in-out 1s infinite"/>
+        <circle cx="260" cy="100" r="8" fill="none" stroke="#7a96c4" stroke-width="2"/>
+        <circle cx="260" cy="100" r="3" fill="#7a96c4"/>
+        <circle cx="345" cy="105" r="5" fill="#52a67a" style="animation:pulseDot 2.5s ease-in-out 1.5s infinite"/>
+        <circle cx="260" cy="305" r="6" fill="#2d6a4f" style="animation:pulseDot 2.5s ease-in-out 2s infinite"/>
+        <text x="28"  y="345" fill="#4f6fa8"  font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1">START</text>
+        <text x="168" y="197" fill="#7a96c4"  font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1">ITERATE</text>
+        <text x="268" y="96"  fill="#e8e4d9"  font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1">PIVOT</text>
+        <text x="352" y="110" fill="#52a67a"  font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1">SCALE</text>
+        <text x="238" y="328" fill="#2d6a4f"  font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1">IMPACT</text>
+        <g style="transform-origin:260px 200px;animation:orbit 9s linear infinite">
+          <circle cx="260" cy="200" r="3" fill="rgba(79,111,168,0.45)"/>
+        </g>
+        <path d="M10 10L30 10M10 10L10 30" stroke="rgba(79,111,168,0.2)" stroke-width="1.5"/>
+        <path d="M390 390L370 390M390 390L390 370" stroke="rgba(45,106,79,0.2)" stroke-width="1.5"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="section-label reveal" style="color:var(--green-light)">02 — Services</div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-number">01</div>
+        <svg class="service-icon" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="14" stroke="#4f6fa8" stroke-width="1.5"/>
+          <path d="M20 6L20 20L30 28" stroke="#4f6fa8" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="20" cy="20" r="2" fill="#4f6fa8"/>
+        </svg>
+        <h3 class="service-title">R&amp;D<br>Automation</h3>
+        <p class="service-desc">Deploy intelligent agents that monitor scientific literature, score research relevance, and surface actionable insights — continuously, at scale.</p>
+      </div>
+      <div class="service-card reveal d1">
+        <div class="service-number">02</div>
+        <svg class="service-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M8 32L8 20L20 12L32 20L32 32Z" stroke="#2d6a4f" stroke-width="1.5"/>
+          <path d="M14 32L14 24L20 20L26 24L26 32" stroke="#2d6a4f" stroke-width="1.5"/>
+          <circle cx="20" cy="12" r="2" fill="#52a67a"/>
+        </svg>
+        <h3 class="service-title">Process<br>Intelligence</h3>
+        <p class="service-desc">Identify high-value automation opportunities across your operations. Design and implement AI-powered workflows tailored to your unique constraints.</p>
+      </div>
+      <div class="service-card reveal d2">
+        <div class="service-number">03</div>
+        <svg class="service-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M10 30L10 18M20 30L20 10M30 30L30 22" stroke="#4f6fa8" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M6 30L34 30" stroke="#4f6fa8" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M10 18L20 10L30 22" stroke="#7a96c4" stroke-width="1" stroke-dasharray="3,2"/>
+        </svg>
+        <h3 class="service-title">Data &amp;<br>Analytics</h3>
+        <p class="service-desc">Transform raw data into structured intelligence. Build pipelines, dashboards, and decision-support systems grounded in your sector's reality.</p>
+      </div>
+      <div class="service-card reveal d1">
+        <div class="service-number">04</div>
+        <svg class="service-icon" viewBox="0 0 40 40" fill="none">
+          <rect x="8" y="14" width="24" height="16" rx="2" stroke="#2d6a4f" stroke-width="1.5"/>
+          <path d="M14 14L14 10C14 8 18 6 20 6C22 6 26 8 26 10L26 14" stroke="#2d6a4f" stroke-width="1.5"/>
+          <circle cx="20" cy="22" r="3" fill="#52a67a" opacity="0.6"/>
+        </svg>
+        <h3 class="service-title">AI<br>Strategy</h3>
+        <p class="service-desc">No vendor lock-in. No hype. We audit your capabilities, define a realistic roadmap, and position AI where it genuinely moves the needle.</p>
+      </div>
+      <div class="service-card reveal d2">
+        <div class="service-number">05</div>
+        <svg class="service-icon" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="14" r="6" stroke="#4f6fa8" stroke-width="1.5"/>
+          <circle cx="10" cy="30" r="4" stroke="#4f6fa8" stroke-width="1.5"/>
+          <circle cx="30" cy="30" r="4" stroke="#2d6a4f" stroke-width="1.5"/>
+          <path d="M16 18L12 26M24 18L28 26" stroke="#7a96c4" stroke-width="1" stroke-dasharray="2,2"/>
+        </svg>
+        <h3 class="service-title">Training &amp;<br>Enablement</h3>
+        <p class="service-desc">Equip your teams to use AI tools confidently and critically. Workshops and hands-on coaching adapted to your industry.</p>
+      </div>
+      <div class="service-card reveal d3">
+        <div class="service-number">06</div>
+        <svg class="service-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M20 8L32 16L32 28L20 34L8 28L8 16Z" stroke="#2d6a4f" stroke-width="1.5"/>
+          <path d="M20 14L26 18L26 24L20 28L14 24L14 18Z" stroke="#52a67a" stroke-width="1" opacity="0.5"/>
+          <circle cx="20" cy="21" r="2" fill="#52a67a"/>
+        </svg>
+        <h3 class="service-title">Pilot &amp;<br>Deployment</h3>
+        <p class="service-desc">From proof-of-concept to production. We design pilots that generate real ROI evidence, then scale what works — iteratively, responsibly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="process-inner">
+    <div class="section-label reveal" style="color:var(--blue-light)">03 — How we work</div>
+    <div class="process-steps">
+      <div class="process-step reveal d1">
+        <div class="step-num b">01</div>
+        <div class="step-title">Diagnose</div>
+        <p class="step-desc">Deep-dive into your organisation's processes, data landscape, and strategic objectives. No assumptions.</p>
+      </div>
+      <div class="process-step reveal d2">
+        <div class="step-num g">02</div>
+        <div class="step-title">Design</div>
+        <p class="step-desc">Co-create a roadmap of high-impact AI use cases, prioritised by feasibility and return.</p>
+      </div>
+      <div class="process-step reveal d3">
+        <div class="step-num b">03</div>
+        <div class="step-title">Deploy</div>
+        <p class="step-desc">Build and launch focused pilots. Measure. Learn. Refine. The iterative cycle begins.</p>
+      </div>
+      <div class="process-step reveal d4">
+        <div class="step-num g">04</div>
+        <div class="step-title">Scale</div>
+        <p class="step-desc">Expand what works. Transfer knowledge to your teams. Establish lasting AI capability from within.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTORS -->
+<section class="sectors-section" id="sectors">
+  <div class="sectors-inner">
+    <div class="section-label reveal" style="color:var(--green-light)">04 — Sectors we serve</div>
+    <div class="sectors-grid reveal d1">
+      <div class="sector-item">
+        <span class="sector-tag">Agri-Food</span>
+        <div>
+          <div class="sector-name">Agriculture &amp; Food Science</div>
+          <p class="sector-desc">AI-assisted formulation, yield optimisation, and supply chain intelligence for sustainable food systems.</p>
+        </div>
+      </div>
+      <div class="sector-item">
+        <span class="sector-tag">BioTech</span>
+        <div>
+          <div class="sector-name">Life Sciences &amp; Biotech</div>
+          <p class="sector-desc">Literature monitoring, experimental data analysis, and regulatory intelligence for research organisations.</p>
+        </div>
+      </div>
+      <div class="sector-item">
+        <span class="sector-tag">Industry</span>
+        <div>
+          <div class="sector-name">Industrial &amp; Manufacturing</div>
+          <p class="sector-desc">Predictive maintenance, quality control automation, and production flow optimisation.</p>
+        </div>
+      </div>
+      <div class="sector-item">
+        <span class="sector-tag">Sustainability</span>
+        <div>
+          <div class="sector-name">Green &amp; Circular Economy</div>
+          <p class="sector-desc">Data-driven ESG tracking, circular flow modelling, and impact measurement for sustainable businesses.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section>
+  <div class="why-inner">
+    <div class="section-label reveal" style="color:var(--blue-light)">05 — Why IterAI</div>
+    <div class="why-grid">
+      <div class="reveal d1">
+        <h2 class="why-heading">Science-first.<br><span>Not hype-first.</span></h2>
+        <p class="why-body">IterAI was built by people with deep scientific and technical backgrounds. We understand the difference between AI that impresses in a demo and AI that holds up under operational conditions.</p>
+        <p class="why-body">We bring rigour, honesty, and a long-term perspective to every engagement. Our clients don't just get a tool — they get a partner for the whole journey.</p>
+      </div>
+      <div class="stats-col reveal d2">
+        <div class="stat-item">
+          <div class="stat-value">Iter</div>
+          <div class="stat-label">Latin for path or journey — built into the name, built into the method</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">100%</div>
+          <div class="stat-label">Bespoke engagements — no off-the-shelf solutions, no generic templates</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">EU</div>
+          <div class="stat-label">European-based, GDPR-native, AI Act-ready — sovereignty by design</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="cta-inner">
+    <div class="section-label reveal" style="color:var(--green-light);justify-content:center">06 — Let's begin</div>
+    <h2 class="cta-heading reveal d1">Ready to start<br>your <em>intelligence</em><br>journey?</h2>
+    <p class="cta-sub reveal d2">Whether you're exploring a first pilot or scaling an existing initiative, we'd love to hear about your challenge.</p>
+    <div class="cta-actions reveal d3">
+      <a href="mailto:hello@iterai.eu" class="btn-primary">hello@iterai.eu</a>
+      <a href="#home" class="btn-ghost">Back to top</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo"><span class="iter">iter</span><span class="ai">AI</span></div>
+  <ul class="footer-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#sectors">Sectors</a></li>
+    <li><a href="mailto:hello@iterai.eu">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 IterAI — iterai.eu</div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
